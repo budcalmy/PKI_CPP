@@ -1,0 +1,54 @@
+Creating directories and files:
+
+ROOT:
+mkdir -p root-ca/{certs,crl,newcerts,private}
+touch root-ca/index.txt
+echo 1000 > root-ca/serial
+
+ISSUING:
+mkdir -p issuing-ca/{certs,crl,newcerts,private}
+touch issuing-ca/index.txt
+echo 1000 > issuing-ca/serial
+
+
+
+Generating private key and self-signed certificate ROOT CA:
+
+openssl genrsa -out root-ca/private/ca.key.pem 4096
+openssl req -config config/root_openssl.cnf -key root-ca/private/ca.key.pem \
+    -new -x509 -days 365 -sha256 -extensions v3_ca \
+    -out root-ca/certs/ca.cert.pem
+
+ Generating private key ISSUING CA:
+
+ openssl genrsa -out issuing-ca/private/issuing.key.pem 4096
+
+
+Creating query for certificate for ISSUING CA:
+
+openssl req -config config/issuing_openssl.cnf -key issuing-ca/private/issuing.key.pem \
+    -new -sha256 -out issuing-ca/certs/issuing.csr.pem
+       
+Signing key query from ISSUING by ROOT:
+
+openssl ca -config config/root_openssl.cnf -extensions v3_intermediate_ca \
+    -days 3650 -notext -md sha256 \
+    -in issuing-ca/certs/issuing.csr.pem \
+    -out issuing-ca/certs/issuing.cert.pem
+
+Создаем цепочку сертификатов для ISSUING CA:
+
+cat issuing-ca/certs/issuing.cert.pem root-ca/certs/ca.cert.pem > issuing-ca/certs/chain.cert.pem
+
+Checking
+
+openssl verify -CAfile root-ca/certs/ca.cert.pem issuing-ca/certs/chain.cert.pem
+RES: issuing-ca/certs/chain.cert.pem: OK
+
+
+просмотр сертификата
+openssl x509 -in /Users/sukhon/Documents/work/PKI/CA/root-ca/certs/ -text -noout
+
+
+
+

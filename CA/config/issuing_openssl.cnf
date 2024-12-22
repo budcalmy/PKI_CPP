@@ -1,0 +1,37 @@
+[ ca ]
+default_ca = CA_default_issuing
+
+[ req ]
+default_bits = 2048
+default_keyfile = privkey.pem
+default_md = sha256
+prompt = yes
+distinguished_name = req_DN_params
+req_extensions = v3_req
+
+[ req_DN_params ]
+countryName = Country Name (2 letter code)
+organizationName = Organization Name (eg, company)
+commonName = Common Name (e.g. server FQDN or YOUR name)
+commonName_max = 64
+
+[ CA_default ]
+dir = ./issuing-ca
+certs = $dir/certs
+crl_dir = $dir/crl
+private_key = $dir/private/private.key.pem
+certificate = $dir/certs/cert1.cert.pem
+default_md = sha256
+policy = policy_strict
+
+[ policy_strict ]
+countryName = match
+stateOrProvinceName = match
+organizationName = match
+commonName = supplied
+emailAddress = optional
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth

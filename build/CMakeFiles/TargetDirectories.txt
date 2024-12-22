@@ -1,0 +1,3 @@
+/Users/sukhon/Documents/work/PKI/build/CMakeFiles/PKI_servies.dir
+/Users/sukhon/Documents/work/PKI/build/CMakeFiles/edit_cache.dir
+/Users/sukhon/Documents/work/PKI/build/CMakeFiles/rebuild_cache.dir
